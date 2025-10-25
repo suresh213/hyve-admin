@@ -16,6 +16,35 @@ export interface AdminCompanySearchParams {
   state?: string
 }
 
+export interface AdminCompanyUpdateData {
+  fullName?: string
+  email?: string
+  profile?: {
+    avatar?: string
+    bio?: string
+    country?: string
+    city?: string
+    state?: string
+    website?: string
+  }
+  companyProfile?: {
+    name?: string
+    logo?: string
+    isRegistered?: boolean
+    contactPersonName?: string
+    contactPersonEmail?: string
+    industryType?: string
+    companySize?: string
+    skillsRequired?: string[]
+    budgetRange?: string
+    gstin?: string
+    linkedinUrl?: string
+    twitterUrl?: string
+    facebookUrl?: string
+    instagramUrl?: string
+  }
+}
+
 export interface AdminCompanyVerificationData {
   verificationStatus: 'PENDING' | 'VERIFIED' | 'REJECTED'
   remarks?: string
@@ -94,6 +123,15 @@ export class AdminCompaniesApiService {
   // Get a specific company by ID
   static async getCompany(id: string): Promise<any> {
     const response = await api.get(`/admin/companies/${id}`)
+    return response.data.data
+  }
+
+  // Update company
+  static async updateCompany(
+    id: string,
+    updates: AdminCompanyUpdateData
+  ): Promise<any> {
+    const response = await api.patch(`/admin/companies/${id}`, updates)
     return response.data.data
   }
 

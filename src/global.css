@@ -14,13 +14,13 @@
 
     /* CSS Variables for light theme */
     --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --foreground: 220 13% 28%; /* More greyish text */
 
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 220 13% 28%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 220 13% 28%;
 
     /* Primary color: #0F1F40 (navy) */
     --brand-primary: 220 62% 15%; /* #0F1F40 */
@@ -29,7 +29,7 @@
 
     /* Secondary color: #F7941D (orange) */
     --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary-foreground: 220 13% 28%;
     --brand-secondary: 33 93% 54%; /* #F7941D */
 
     --muted: 210 40% 96.1%;
@@ -56,13 +56,13 @@
 
   .dark {
     --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+    --foreground: 210 40% 85%; /* More greyish in dark mode */
 
     --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
+    --card-foreground: 210 40% 85%;
 
     --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    --popover-foreground: 210 40% 85%;
 
     /* Primary color: #0F1F40 (navy) */
     --brand-primary: 220 62% 15%; /* #0F1F40 */
@@ -71,7 +71,7 @@
 
     /* Secondary color: #F7941D (orange) */
     --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary-foreground: 210 40% 85%;
     --brand-secondary: 33 93% 54%; /* #F7941D */
 
     --muted: 217.2 32.6% 17.5%;

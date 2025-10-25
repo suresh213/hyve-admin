@@ -34,6 +34,12 @@ const CompanyDetailsPage = lazy(() => import('./pages/companies/[id]'))
 const TeamDetailsPage = lazy(() => import('./pages/teams/[id]'))
 const ProjectDetailsPage = lazy(() => import('./pages/projects/[id]'))
 
+// HYVE Edit Pages
+const FreelancerEditPage = lazy(() => import('./pages/freelancers/[id]/edit'))
+const CompanyEditPage = lazy(() => import('./pages/companies/[id]/edit'))
+const TeamEditPage = lazy(() => import('./pages/teams/[id]/edit'))
+const ProjectEditPage = lazy(() => import('./pages/projects/[id]/edit'))
+
 // Helper function to create a route with authentication
 const createRoute = (
   path: string,
@@ -154,6 +160,38 @@ const paths = {
   projectDetails: {
     path: '/projects/:id',
     component: <ProjectDetailsPage />,
+    isPrivate: false,
+    isAuth: false,
+    isOnboarding: false,
+    isAdmin: true,
+  },
+  freelancerEdit: {
+    path: '/freelancers/:id/edit',
+    component: <FreelancerEditPage />,
+    isPrivate: false,
+    isAuth: false,
+    isOnboarding: false,
+    isAdmin: true,
+  },
+  companyEdit: {
+    path: '/companies/:id/edit',
+    component: <CompanyEditPage />,
+    isPrivate: false,
+    isAuth: false,
+    isOnboarding: false,
+    isAdmin: true,
+  },
+  teamEdit: {
+    path: '/teams/:id/edit',
+    component: <TeamEditPage />,
+    isPrivate: false,
+    isAuth: false,
+    isOnboarding: false,
+    isAdmin: true,
+  },
+  projectEdit: {
+    path: '/projects/:id/edit',
+    component: <ProjectEditPage />,
     isPrivate: false,
     isAuth: false,
     isOnboarding: false,

@@ -171,8 +171,7 @@ const ProjectsPage: React.FC = () => {
   }
 
   const handleEdit = (id: string) => {
-    // For now, just navigate to view. Edit functionality can be added later
-    navigate(`/projects/${id}`)
+    navigate(`/projects/${id}/edit`)
   }
 
   const handleStatusUpdate = async (id: string, status: string) => {

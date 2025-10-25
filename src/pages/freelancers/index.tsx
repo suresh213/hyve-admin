@@ -140,8 +140,7 @@ const FreelancersPage: React.FC = () => {
   }
 
   const handleEdit = (id: string) => {
-    // For now, just navigate to view. Edit functionality can be added later
-    navigate(`/freelancers/${id}`)
+    navigate(`/freelancers/${id}/edit`)
   }
 
   const formatHourlyRate = (rate?: number) => {

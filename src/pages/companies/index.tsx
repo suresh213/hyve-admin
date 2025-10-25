@@ -152,8 +152,7 @@ const CompaniesPage: React.FC = () => {
   }
 
   const handleEdit = (id: string) => {
-    // For now, navigate to view. Edit functionality can be added later
-    navigate(`/companies/${id}`)
+    navigate(`/companies/${id}/edit`)
   }
 
   const handleVerificationUpdate = async (

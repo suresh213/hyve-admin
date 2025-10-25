@@ -135,8 +135,7 @@ const TeamsPage: React.FC = () => {
   }
 
   const handleEdit = (id: string) => {
-    // For now, just navigate to view. Edit functionality can be added later
-    navigate(`/teams/${id}`)
+    navigate(`/teams/${id}/edit`)
   }
 
   const handleDelete = async (id: string) => {

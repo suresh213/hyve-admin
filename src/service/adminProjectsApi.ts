@@ -17,7 +17,15 @@ export interface AdminProjectSearchParams {
 }
 
 export interface AdminProjectUpdateData {
-  status: string
+  title?: string
+  description?: string
+  status?: string
+  totalAmount?: number
+  startDate?: string
+  endDate?: string
+  skills?: string[]
+  requirements?: string
+  deliverables?: string
   adminNote?: string
 }
 
@@ -92,6 +100,15 @@ export class AdminProjectsApiService {
   // Get a specific project by ID
   static async getProject(id: string): Promise<any> {
     const response = await api.get(`/admin/projects/${id}`)
+    return response.data.data
+  }
+
+  // Update project
+  static async updateProject(
+    id: string,
+    updates: AdminProjectUpdateData
+  ): Promise<any> {
+    const response = await api.patch(`/admin/projects/${id}`, updates)
     return response.data.data
   }
 

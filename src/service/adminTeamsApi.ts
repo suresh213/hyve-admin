@@ -90,6 +90,15 @@ export class AdminTeamsApiService {
     return response.data.data
   }
 
+  // Update team
+  static async updateTeam(
+    id: string,
+    updates: AdminTeamUpdateData
+  ): Promise<any> {
+    const response = await api.patch(`/admin/teams/${id}`, updates)
+    return response.data.data
+  }
+
   // Update team status
   static async updateTeamStatus(
     id: string,

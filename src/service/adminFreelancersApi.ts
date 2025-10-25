@@ -18,6 +18,33 @@ export interface AdminFreelancerSearchParams {
 }
 
 export interface AdminFreelancerUpdateData {
+  fullName?: string
+  email?: string
+  profile?: {
+    avatar?: string
+    bio?: string
+    country?: string
+    city?: string
+    state?: string
+    website?: string
+    linkedinUrl?: string
+    githubUrl?: string
+    twitterUrl?: string
+    facebookUrl?: string
+    instagramUrl?: string
+  }
+  freelancerProfile?: {
+    skills?: string[]
+    experienceLevel?: string
+    minimumBudget?: number
+    maximumBudget?: number
+    certifications?: string[]
+    willingToJoinTeams?: boolean
+    preferredRolesInTeams?: string[]
+    preferredRoles?: string[]
+    aadharNumber?: string
+    teamPreferences?: string
+  }
   status?: boolean
   isVerified?: boolean
 }
@@ -101,6 +128,15 @@ export class AdminFreelancersApiService {
   // Get a specific freelancer by ID
   static async getFreelancer(id: string): Promise<any> {
     const response = await api.get(`/admin/freelancers/${id}`)
+    return response.data.data
+  }
+
+  // Update freelancer
+  static async updateFreelancer(
+    id: string,
+    updates: AdminFreelancerUpdateData
+  ): Promise<any> {
+    const response = await api.patch(`/admin/freelancers/${id}`, updates)
     return response.data.data
   }
 
