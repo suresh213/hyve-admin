@@ -31,11 +31,6 @@ interface DashboardStats {
   projectStatus: Record<string, number>
   topSkills: Array<{ skill: string; count: number }>
   topIndustries: Array<{ industry: string; count: number }>
-  recentActivity: Array<{
-    type: string
-    description: string
-    timestamp: string
-  }>
 }
 
 const DashboardPage: React.FC = () => {
@@ -64,7 +59,6 @@ const DashboardPage: React.FC = () => {
         projectStatus: {},
         topSkills: [],
         topIndustries: [],
-        recentActivity: [],
       })
     } finally {
       setLoading(false)
@@ -297,8 +291,8 @@ const DashboardPage: React.FC = () => {
         </Card>
       </div>
 
-      {/* Top Industries & Recent Activity */}
-      <div className='grid gap-4 md:grid-cols-2'>
+      {/* Top Industries */}
+      <div className='grid gap-4'>
         <Card>
           <CardHeader>
             <CardTitle>Top Industries</CardTitle>
@@ -322,7 +316,9 @@ const DashboardPage: React.FC = () => {
                       className='flex items-center justify-between'
                     >
                       <span className='text-sm capitalize'>
-                        {industry.industry.replace(/_/g, ' ').toLowerCase()}
+                        {industry.industry
+                          ? industry.industry.replace(/_/g, ' ').toLowerCase()
+                          : 'Unknown'}
                       </span>
                       <span className='font-medium'>{industry.count}</span>
                     </div>
@@ -331,73 +327,6 @@ const DashboardPage: React.FC = () => {
                   <p className='text-sm text-muted-foreground'>
                     No industry data available
                   </p>
-                )}
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Recent Activity</CardTitle>
-          </CardHeader>
-          <CardContent>
-            {loading ? (
-              <div className='space-y-3'>
-                {[...Array(5)].map((_, i) => (
-                  <div key={i} className='flex items-start space-x-2'>
-                    <Skeleton className='mt-2 h-2 w-2 rounded-full' />
-                    <div className='flex-1'>
-                      <Skeleton className='mb-1 h-4 w-full' />
-                      <Skeleton className='h-3 w-20' />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className='space-y-3'>
-                {stats?.recentActivity && stats.recentActivity.length > 0 ? (
-                  stats.recentActivity.slice(0, 5).map((activity, index) => (
-                    <div key={index} className='flex items-start space-x-2'>
-                      <div className='mt-2 h-2 w-2 rounded-full bg-blue-500' />
-                      <div className='flex-1'>
-                        <p className='text-sm'>{activity.description}</p>
-                        <p className='text-xs text-muted-foreground'>
-                          {new Date(activity.timestamp).toLocaleDateString()}
-                        </p>
-                      </div>
-                    </div>
-                  ))
-                ) : (
-                  <div className='space-y-3'>
-                    <div className='flex items-start space-x-2'>
-                      <div className='mt-2 h-2 w-2 rounded-full bg-green-500' />
-                      <div className='flex-1'>
-                        <p className='text-sm'>Welcome to HYVE Admin Panel</p>
-                        <p className='text-xs text-muted-foreground'>
-                          Just now
-                        </p>
-                      </div>
-                    </div>
-                    <div className='flex items-start space-x-2'>
-                      <div className='mt-2 h-2 w-2 rounded-full bg-blue-500' />
-                      <div className='flex-1'>
-                        <p className='text-sm'>Dashboard analytics loaded</p>
-                        <p className='text-xs text-muted-foreground'>
-                          Just now
-                        </p>
-                      </div>
-                    </div>
-                    <div className='flex items-start space-x-2'>
-                      <div className='mt-2 h-2 w-2 rounded-full bg-purple-500' />
-                      <div className='flex-1'>
-                        <p className='text-sm'>All modules are ready</p>
-                        <p className='text-xs text-muted-foreground'>
-                          Just now
-                        </p>
-                      </div>
-                    </div>
-                  </div>
                 )}
               </div>
             )}

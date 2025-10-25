@@ -61,7 +61,7 @@ interface Company {
     city?: string
     state?: string
   }
-  companyProfile: {
+  companyProfile?: {
     name: string
     logo?: string
     isRegistered: boolean
@@ -77,7 +77,7 @@ interface Company {
     facebookUrl?: string
     instagramUrl?: string
     linkedinUrl?: string
-  }
+  } | null
 }
 
 interface CompaniesResponse {
@@ -152,19 +152,8 @@ const CompaniesPage: React.FC = () => {
   }
 
   const handleEdit = (id: string) => {
-    // For now, just navigate to view. Edit functionality can be added later
+    // For now, navigate to view. Edit functionality can be added later
     navigate(`/companies/${id}`)
-  }
-
-  const handleDelete = async (id: string) => {
-    if (confirm('Are you sure you want to delete this company?')) {
-      try {
-        await AdminCompaniesApiService.deleteCompany(id)
-        fetchCompanies()
-      } catch (error) {
-        console.error('Error deleting company:', error)
-      }
-    }
   }
 
   const handleVerificationUpdate = async (
@@ -182,7 +171,7 @@ const CompaniesPage: React.FC = () => {
     }
   }
 
-  const getVerificationBadgeVariant = (status: string) => {
+  const getVerificationBadgeVariant = (status: string | undefined) => {
     switch (status) {
       case 'VERIFIED':
         return 'default'
@@ -229,7 +218,7 @@ const CompaniesPage: React.FC = () => {
             <div className='text-2xl font-bold'>
               {
                 (Array.isArray(companies) ? companies : []).filter(
-                  (c) => c.companyProfile.verificationStatus === 'VERIFIED'
+                  (c) => c.companyProfile?.verificationStatus === 'VERIFIED'
                 ).length
               }
             </div>
@@ -245,7 +234,7 @@ const CompaniesPage: React.FC = () => {
             <div className='text-2xl font-bold'>
               {
                 (Array.isArray(companies) ? companies : []).filter(
-                  (c) => c.companyProfile.verificationStatus === 'PENDING'
+                  (c) => c.companyProfile?.verificationStatus === 'PENDING'
                 ).length
               }
             </div>
@@ -263,7 +252,7 @@ const CompaniesPage: React.FC = () => {
             <div className='text-2xl font-bold'>
               {
                 (Array.isArray(companies) ? companies : []).filter(
-                  (c) => c.companyProfile.isRegistered
+                  (c) => c.companyProfile?.isRegistered
                 ).length
               }
             </div>
@@ -327,37 +316,38 @@ const CompaniesPage: React.FC = () => {
                   <TableRow key={company.id}>
                     <TableCell className='font-medium'>
                       <div className='flex items-center gap-2'>
-                        {company.companyProfile.logo && (
+                        {company.companyProfile?.logo && (
                           <img
                             src={company.companyProfile.logo}
                             alt={company.companyProfile.name}
                             className='h-8 w-8 rounded object-cover'
                           />
                         )}
-                        <span>{company.companyProfile.name}</span>
+                        <span>{company.companyProfile?.name || 'N/A'}</span>
                       </div>
                     </TableCell>
                     <TableCell>
-                      {company.companyProfile.contactPersonName}
+                      {company.companyProfile?.contactPersonName || 'N/A'}
                     </TableCell>
                     <TableCell>{company.email}</TableCell>
                     <TableCell>
                       <Badge variant='outline'>
-                        {company.companyProfile.industryType || 'Not set'}
+                        {company.companyProfile?.industryType || 'Not set'}
                       </Badge>
                     </TableCell>
                     <TableCell>
                       <Badge variant='secondary'>
-                        {company.companyProfile.companySize || 'Not set'}
+                        {company.companyProfile?.companySize || 'Not set'}
                       </Badge>
                     </TableCell>
                     <TableCell>
                       <Badge
                         variant={getVerificationBadgeVariant(
-                          company.companyProfile.verificationStatus
+                          company.companyProfile?.verificationStatus
                         )}
                       >
-                        {company.companyProfile.verificationStatus}
+                        {company.companyProfile?.verificationStatus ||
+                          'Unknown'}
                       </Badge>
                     </TableCell>
                     <TableCell>
@@ -382,7 +372,7 @@ const CompaniesPage: React.FC = () => {
                             Edit
                           </DropdownMenuItem>
                           <DropdownMenuSeparator />
-                          {company.companyProfile.verificationStatus !==
+                          {company.companyProfile?.verificationStatus !==
                             'VERIFIED' && (
                             <DropdownMenuItem
                               onClick={() =>
@@ -401,14 +391,6 @@ const CompaniesPage: React.FC = () => {
                           >
                             <XCircle className='mr-2 h-4 w-4' />
                             Reject
-                          </DropdownMenuItem>
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem
-                            onClick={() => handleDelete(company.id)}
-                            className='text-red-600'
-                          >
-                            <Trash2 className='mr-2 h-4 w-4' />
-                            Delete
                           </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>

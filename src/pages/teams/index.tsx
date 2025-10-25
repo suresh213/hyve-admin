@@ -500,14 +500,6 @@ const TeamsPage: React.FC = () => {
                             <XCircle className='mr-2 h-4 w-4' />
                             Reject
                           </DropdownMenuItem>
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem
-                            onClick={() => handleDelete(team.id)}
-                            className='text-red-600'
-                          >
-                            <Trash2 className='mr-2 h-4 w-4' />
-                            Delete
-                          </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
                     </TableCell>

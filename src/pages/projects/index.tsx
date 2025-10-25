@@ -175,16 +175,6 @@ const ProjectsPage: React.FC = () => {
     navigate(`/projects/${id}`)
   }
 
-  const handleDelete = async (id: string) => {
-    if (confirm('Are you sure you want to delete this project?')) {
-      try {
-        await AdminProjectsApiService.deleteProject(id)
-        fetchProjects()
-      } catch (error) {
-        console.error('Error deleting project:', error)
-      }
-    }
-  }
 
   const handleStatusUpdate = async (id: string, status: string) => {
     try {
@@ -389,14 +379,6 @@ const ProjectsPage: React.FC = () => {
                           >
                             <Edit className='mr-2 h-4 w-4' />
                             Edit
-                          </DropdownMenuItem>
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem
-                            onClick={() => handleDelete(project.id)}
-                            className='text-red-600'
-                          >
-                            <Trash2 className='mr-2 h-4 w-4' />
-                            Delete
                           </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>

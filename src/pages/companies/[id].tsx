@@ -6,22 +6,22 @@ import {
   Trash2,
   CheckCircle,
   XCircle,
-  MapPin,
-  Calendar,
-  DollarSign,
   Building2,
   Mail,
   Phone,
   Globe,
-  Users,
+  MapPin,
 } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
+import { Skeleton } from '@/components/ui/skeleton'
 
-import AdminCompaniesApiService from '@/service/adminCompaniesApi'
+import AdminCompaniesApiService, {
+  AdminCompanyUpdateData,
+} from '@/service/adminCompaniesApi'
 
 interface CompanyProfile {
   id: string
@@ -45,7 +45,7 @@ interface CompanyProfile {
     facebookUrl?: string
     instagramUrl?: string
   }
-  companyProfile: {
+  companyProfile?: {
     name: string
     logo?: string
     isRegistered: boolean
@@ -61,8 +61,7 @@ interface CompanyProfile {
     facebookUrl?: string
     instagramUrl?: string
     linkedinUrl?: string
-    documents?: string[]
-  }
+  } | null
 }
 
 const CompanyDetailsPage: React.FC = () => {
@@ -80,8 +79,8 @@ const CompanyDetailsPage: React.FC = () => {
   const fetchCompany = async () => {
     try {
       setLoading(true)
-      const response = await AdminCompaniesApiService.getCompany(id!)
-      setCompany(response.data)
+      const companyData = await AdminCompaniesApiService.getCompanyById(id!)
+      setCompany(companyData)
     } catch (error) {
       console.error('Error fetching company:', error)
     } finally {
@@ -102,23 +101,57 @@ const CompanyDetailsPage: React.FC = () => {
 
   const handleVerificationUpdate = async (status: 'VERIFIED' | 'REJECTED') => {
     try {
-      await AdminCompaniesApiService.updateCompanyVerification(id!, {
+      const updateData: AdminCompanyUpdateData = {
         verificationStatus: status,
-        remarks: `Status updated to ${status} by admin`,
-      })
-      fetchCompany()
+      }
+      await AdminCompaniesApiService.updateCompany(id!, updateData)
+      await fetchCompany()
     } catch (error) {
       console.error('Error updating company verification:', error)
+    }
+  }
+
+  const getVerificationBadgeVariant = (status: string | undefined) => {
+    switch (status) {
+      case 'VERIFIED':
+        return 'default'
+      case 'PENDING':
+        return 'secondary'
+      case 'REJECTED':
+        return 'destructive'
+      default:
+        return 'outline'
     }
   }
 
   if (loading) {
     return (
       <div className='flex-1 space-y-4 p-6'>
-        <div className='flex items-center justify-center py-8'>
-          <div className='text-muted-foreground'>
-            Loading company details...
-          </div>
+        <div className='flex items-center space-x-2'>
+          <Skeleton className='h-10 w-10' />
+          <Skeleton className='h-8 w-48' />
+        </div>
+        <div className='grid gap-6 md:grid-cols-2'>
+          <Card>
+            <CardHeader>
+              <Skeleton className='h-6 w-32' />
+            </CardHeader>
+            <CardContent className='space-y-4'>
+              <Skeleton className='h-4 w-full' />
+              <Skeleton className='h-4 w-full' />
+              <Skeleton className='h-4 w-full' />
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader>
+              <Skeleton className='h-6 w-32' />
+            </CardHeader>
+            <CardContent className='space-y-4'>
+              <Skeleton className='h-4 w-full' />
+              <Skeleton className='h-4 w-full' />
+              <Skeleton className='h-4 w-full' />
+            </CardContent>
+          </Card>
         </div>
       </div>
     )
@@ -127,9 +160,7 @@ const CompanyDetailsPage: React.FC = () => {
   if (!company) {
     return (
       <div className='flex-1 space-y-4 p-6'>
-        <div className='flex items-center justify-center py-8'>
-          <div className='text-muted-foreground'>Company not found</div>
-        </div>
+        <div className='text-center'>Company not found</div>
       </div>
     )
   }
@@ -139,40 +170,30 @@ const CompanyDetailsPage: React.FC = () => {
       {/* Header */}
       <div className='flex items-center justify-between'>
         <div className='flex items-center space-x-4'>
-          <Button variant='ghost' onClick={() => navigate('/companies')}>
+          <Button variant='outline' size='sm' onClick={() => navigate('/companies')}>
             <ArrowLeft className='mr-2 h-4 w-4' />
             Back to Companies
           </Button>
-          <div>
-            <h2 className='text-2xl font-bold tracking-tight'>
-              {company.companyProfile.name}
-            </h2>
-            <p className='text-muted-foreground'>{company.email}</p>
+          <div className='flex items-center space-x-2'>
+            {company.companyProfile?.logo && (
+              <img
+                src={company.companyProfile.logo}
+                alt={company.companyProfile.name}
+                className='h-10 w-10 rounded-lg object-cover'
+              />
+            )}
+            <div>
+              <h1 className='text-2xl font-bold tracking-tight'>
+                {company.companyProfile?.name || 'Company Details'}
+              </h1>
+              <p className='text-muted-foreground'>
+                {company.email}
+              </p>
+            </div>
           </div>
         </div>
         <div className='flex items-center space-x-2'>
-          {company.companyProfile.verificationStatus !== 'VERIFIED' && (
-            <Button
-              variant='outline'
-              onClick={() => handleVerificationUpdate('VERIFIED')}
-            >
-              <CheckCircle className='mr-2 h-4 w-4' />
-              Approve
-            </Button>
-          )}
-          {company.companyProfile.verificationStatus !== 'REJECTED' && (
-            <Button
-              variant='outline'
-              onClick={() => handleVerificationUpdate('REJECTED')}
-            >
-              <XCircle className='mr-2 h-4 w-4' />
-              Reject
-            </Button>
-          )}
-          <Button
-            variant='outline'
-            onClick={() => navigate(`/companies/${id}/edit`)}
-          >
+          <Button variant='outline' onClick={() => navigate(`/companies/${id}/edit`)}>
             <Edit className='mr-2 h-4 w-4' />
             Edit
           </Button>
@@ -183,264 +204,257 @@ const CompanyDetailsPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Profile Overview */}
-      <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-4'>
-        <Card>
-          <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-            <CardTitle className='text-sm font-medium'>Status</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className='flex items-center space-x-2'>
+      {/* Status and Actions */}
+      <Card>
+        <CardContent className='pt-6'>
+          <div className='flex items-center justify-between'>
+            <div className='flex items-center space-x-4'>
               <Badge
-                variant={
-                  company.companyProfile.verificationStatus === 'VERIFIED'
-                    ? 'default'
-                    : 'outline'
-                }
+                variant={getVerificationBadgeVariant(
+                  company.companyProfile?.verificationStatus
+                )}
               >
-                {company.companyProfile.verificationStatus}
+                {company.companyProfile?.verificationStatus || 'Unknown'}
               </Badge>
-              {company.companyProfile.isRegistered && (
-                <Badge variant='secondary'>Registered</Badge>
-              )}
+              <span className='text-sm text-muted-foreground'>
+                {company.companyProfile?.isRegistered ? 'Legally Registered' : 'Not Registered'}
+              </span>
             </div>
-          </CardContent>
-        </Card>
+            {company.companyProfile?.verificationStatus !== 'VERIFIED' && (
+              <div className='flex items-center space-x-2'>
+                <Button
+                  size='sm'
+                  onClick={() => handleVerificationUpdate('VERIFIED')}
+                >
+                  <CheckCircle className='mr-2 h-4 w-4' />
+                  Verify
+                </Button>
+                <Button
+                  size='sm'
+                  variant='destructive'
+                  onClick={() => handleVerificationUpdate('REJECTED')}
+                >
+                  <XCircle className='mr-2 h-4 w-4' />
+                  Reject
+                </Button>
+              </div>
+            )}
+          </div>
+        </CardContent>
+      </Card>
 
-        <Card>
-          <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-            <CardTitle className='text-sm font-medium'>Industry</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Badge variant='outline'>
-              {company.companyProfile.industryType || 'Not specified'}
-            </Badge>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-            <CardTitle className='text-sm font-medium'>Company Size</CardTitle>
-            <Users className='h-4 w-4 text-muted-foreground' />
-          </CardHeader>
-          <CardContent>
-            <div className='text-2xl font-bold'>
-              {company.companyProfile.companySize || 'Not set'}
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-            <CardTitle className='text-sm font-medium'>Member Since</CardTitle>
-            <Calendar className='h-4 w-4 text-muted-foreground' />
-          </CardHeader>
-          <CardContent>
-            <div className='text-2xl font-bold'>
-              {new Date(company.createdAt).getFullYear()}
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      <div className='grid gap-4 md:grid-cols-2'>
-        {/* Basic Information */}
+      {/* Company Details */}
+      <div className='grid gap-6 md:grid-cols-2'>
         <Card>
           <CardHeader>
-            <CardTitle>Company Information</CardTitle>
+            <CardTitle className='flex items-center'>
+              <Building2 className='mr-2 h-5 w-5' />
+              Company Information
+            </CardTitle>
+          </CardHeader>
+          <CardContent className='space-y-4'>
+            <div>
+              <label className='text-sm font-medium text-muted-foreground'>
+                Company Name
+              </label>
+              <p className='text-sm'>
+                {company.companyProfile?.name || 'Not provided'}
+              </p>
+            </div>
+            <div>
+              <label className='text-sm font-medium text-muted-foreground'>
+                Contact Person
+              </label>
+              <p className='text-sm'>
+                {company.companyProfile?.contactPersonName || 'Not provided'}
+              </p>
+            </div>
+            <div>
+              <label className='text-sm font-medium text-muted-foreground'>
+                Contact Email
+              </label>
+              <p className='text-sm'>
+                {company.companyProfile?.contactPersonEmail || 'Not provided'}
+              </p>
+            </div>
+            <div>
+              <label className='text-sm font-medium text-muted-foreground'>
+                Industry Type
+              </label>
+              <p className='text-sm'>
+                {company.companyProfile?.industryType || 'Not provided'}
+              </p>
+            </div>
+            <div>
+              <label className='text-sm font-medium text-muted-foreground'>
+                Company Size
+              </label>
+              <p className='text-sm'>
+                {company.companyProfile?.companySize || 'Not provided'}
+              </p>
+            </div>
+            <div>
+              <label className='text-sm font-medium text-muted-foreground'>
+                GSTIN
+              </label>
+              <p className='text-sm'>
+                {company.companyProfile?.gstin || 'Not provided'}
+              </p>
+            </div>
+            <div>
+              <label className='text-sm font-medium text-muted-foreground'>
+                Budget Range
+              </label>
+              <p className='text-sm'>
+                {company.companyProfile?.budgetRange || 'Not provided'}
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Contact & Location</CardTitle>
           </CardHeader>
           <CardContent className='space-y-4'>
             <div className='flex items-center space-x-2'>
-              {company.companyProfile.logo ? (
-                <img
-                  src={company.companyProfile.logo}
-                  alt={company.companyProfile.name}
-                  className='h-16 w-16 rounded'
-                />
-              ) : (
-                <div className='flex h-16 w-16 items-center justify-center rounded bg-gray-200'>
-                  <Building2 className='h-8 w-8' />
-                </div>
-              )}
-              <div>
-                <h3 className='text-lg font-semibold'>
-                  {company.companyProfile.name}
-                </h3>
-                <p className='text-muted-foreground'>{company.email}</p>
-              </div>
+              <Mail className='h-4 w-4 text-muted-foreground' />
+              <span className='text-sm'>{company.email}</span>
             </div>
-
-            <Separator />
-
-            <div className='space-y-3'>
-              <div className='flex items-center space-x-2'>
-                <Mail className='h-4 w-4 text-muted-foreground' />
-                <span className='text-sm'>
-                  {company.companyProfile.contactPersonEmail || 'Not provided'}
-                </span>
-              </div>
-
-              <div className='flex items-center space-x-2'>
-                <MapPin className='h-4 w-4 text-muted-foreground' />
-                <span className='text-sm'>
-                  {company.profile?.city && company.profile?.country
-                    ? `${company.profile.city}, ${company.profile.country}`
-                    : company.profile?.country || 'Location not set'}
-                </span>
-              </div>
-
-              <div className='flex items-center space-x-2'>
-                <Calendar className='h-4 w-4 text-muted-foreground' />
-                <span className='text-sm'>
-                  Joined {new Date(company.createdAt).toLocaleDateString()}
-                </span>
-              </div>
+            <div className='flex items-center space-x-2'>
+              <MapPin className='h-4 w-4 text-muted-foreground' />
+              <span className='text-sm'>
+                {company.profile?.city && company.profile?.country
+                  ? `${company.profile.city}, ${company.profile.country}`
+                  : 'Location not provided'}
+              </span>
             </div>
-
-            {/* Social Links */}
-            {(company.companyProfile.website ||
-              company.companyProfile.linkedinUrl ||
-              company.companyProfile.twitterUrl ||
-              company.companyProfile.facebookUrl) && (
-              <>
-                <Separator />
-                <div className='space-y-2'>
-                  <h4 className='text-sm font-medium'>Links</h4>
-                  <div className='flex flex-wrap gap-2'>
-                    {company.companyProfile.website && (
-                      <Badge variant='outline'>
-                        <a
-                          href={company.companyProfile.website}
-                          target='_blank'
-                          rel='noopener noreferrer'
-                        >
-                          <Globe className='mr-1 h-3 w-3' />
-                          Website
-                        </a>
-                      </Badge>
-                    )}
-                    {company.companyProfile.linkedinUrl && (
-                      <Badge variant='outline'>
-                        <a
-                          href={company.companyProfile.linkedinUrl}
-                          target='_blank'
-                          rel='noopener noreferrer'
-                        >
-                          LinkedIn
-                        </a>
-                      </Badge>
-                    )}
-                    {company.companyProfile.twitterUrl && (
-                      <Badge variant='outline'>
-                        <a
-                          href={company.companyProfile.twitterUrl}
-                          target='_blank'
-                          rel='noopener noreferrer'
-                        >
-                          Twitter
-                        </a>
-                      </Badge>
-                    )}
-                    {company.companyProfile.facebookUrl && (
-                      <Badge variant='outline'>
-                        <a
-                          href={company.companyProfile.facebookUrl}
-                          target='_blank'
-                          rel='noopener noreferrer'
-                        >
-                          Facebook
-                        </a>
-                      </Badge>
-                    )}
-                  </div>
-                </div>
-              </>
+            {company.profile?.website && (
+              <div className='flex items-center space-x-2'>
+                <Globe className='h-4 w-4 text-muted-foreground' />
+                <a
+                  href={company.profile.website}
+                  target='_blank'
+                  rel='noopener noreferrer'
+                  className='text-sm text-blue-600 hover:underline'
+                >
+                  {company.profile.website}
+                </a>
+              </div>
             )}
-          </CardContent>
-        </Card>
-
-        {/* Company Details */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Company Details</CardTitle>
-          </CardHeader>
-          <CardContent className='space-y-4'>
-            <div className='grid gap-4'>
-              <div>
-                <h4 className='mb-2 text-sm font-medium'>Contact Person</h4>
-                <p className='text-sm'>
-                  {company.companyProfile.contactPersonName}
-                </p>
-              </div>
-
-              <div>
-                <h4 className='mb-2 text-sm font-medium'>Industry</h4>
-                <Badge variant='outline'>
-                  {company.companyProfile.industryType || 'Not specified'}
-                </Badge>
-              </div>
-
-              <div>
-                <h4 className='mb-2 text-sm font-medium'>Company Size</h4>
-                <p className='text-sm'>
-                  {company.companyProfile.companySize || 'Not specified'}
-                </p>
-              </div>
-
-              <div>
-                <h4 className='mb-2 text-sm font-medium'>Budget Range</h4>
-                <p className='text-sm'>
-                  {company.companyProfile.budgetRange || 'Not specified'}
-                </p>
-              </div>
-
-              {company.companyProfile.gstin && (
-                <div>
-                  <h4 className='mb-2 text-sm font-medium'>GSTIN</h4>
-                  <p className='font-mono text-sm'>
-                    {company.companyProfile.gstin}
-                  </p>
-                </div>
-              )}
-
-              <div>
-                <h4 className='mb-2 text-sm font-medium'>Skills Required</h4>
-                <div className='flex flex-wrap gap-1'>
-                  {company.companyProfile.skillsRequired.map((skill) => (
-                    <Badge key={skill} variant='secondary' className='text-xs'>
-                      {skill}
-                    </Badge>
-                  ))}
-                </div>
-              </div>
-
-              {company.companyProfile.documents &&
-                company.companyProfile.documents.length > 0 && (
-                  <div>
-                    <h4 className='mb-2 text-sm font-medium'>Documents</h4>
-                    <div className='space-y-1'>
-                      {company.companyProfile.documents.map((doc, index) => (
-                        <Badge
-                          key={index}
-                          variant='outline'
-                          className='text-xs'
-                        >
-                          <a
-                            href={doc}
-                            target='_blank'
-                            rel='noopener noreferrer'
-                          >
-                            Document {index + 1}
-                          </a>
-                        </Badge>
-                      ))}
-                    </div>
-                  </div>
+            <Separator />
+            <div>
+              <label className='text-sm font-medium text-muted-foreground mb-2 block'>
+                Social Links
+              </label>
+              <div className='space-y-1'>
+                {company.companyProfile?.linkedinUrl && (
+                  <a
+                    href={company.companyProfile.linkedinUrl}
+                    target='_blank'
+                    rel='noopener noreferrer'
+                    className='text-sm text-blue-600 hover:underline block'
+                  >
+                    LinkedIn
+                  </a>
                 )}
+                {company.companyProfile?.twitterUrl && (
+                  <a
+                    href={company.companyProfile.twitterUrl}
+                    target='_blank'
+                    rel='noopener noreferrer'
+                    className='text-sm text-blue-600 hover:underline block'
+                  >
+                    Twitter
+                  </a>
+                )}
+                {company.companyProfile?.facebookUrl && (
+                  <a
+                    href={company.companyProfile.facebookUrl}
+                    target='_blank'
+                    rel='noopener noreferrer'
+                    className='text-sm text-blue-600 hover:underline block'
+                  >
+                    Facebook
+                  </a>
+                )}
+                {company.companyProfile?.instagramUrl && (
+                  <a
+                    href={company.companyProfile.instagramUrl}
+                    target='_blank'
+                    rel='noopener noreferrer'
+                    className='text-sm text-blue-600 hover:underline block'
+                  >
+                    Instagram
+                  </a>
+                )}
+              </div>
             </div>
           </CardContent>
         </Card>
       </div>
+
+      {/* Skills Required */}
+      {company.companyProfile?.skillsRequired &&
+        company.companyProfile.skillsRequired.length > 0 && (
+          <Card>
+            <CardHeader>
+              <CardTitle>Skills Required</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className='flex flex-wrap gap-2'>
+                {company.companyProfile.skillsRequired.map((skill, index) => (
+                  <Badge key={index} variant='secondary'>
+                    {skill}
+                  </Badge>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+      {/* Account Information */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Account Information</CardTitle>
+        </CardHeader>
+        <CardContent className='space-y-4'>
+          <div className='grid grid-cols-2 gap-4'>
+            <div>
+              <label className='text-sm font-medium text-muted-foreground'>
+                Account Created
+              </label>
+              <p className='text-sm'>
+                {new Date(company.createdAt).toLocaleDateString()}
+              </p>
+            </div>
+            <div>
+              <label className='text-sm font-medium text-muted-foreground'>
+                Last Updated
+              </label>
+              <p className='text-sm'>
+                {new Date(company.updatedAt).toLocaleDateString()}
+              </p>
+            </div>
+            <div>
+              <label className='text-sm font-medium text-muted-foreground'>
+                Email Verified
+              </label>
+              <p className='text-sm'>
+                {company.emailVerified ? 'Yes' : 'No'}
+              </p>
+            </div>
+            <div>
+              <label className='text-sm font-medium text-muted-foreground'>
+                Mobile Verified
+              </label>
+              <p className='text-sm'>
+                {company.mobileVerified ? 'Yes' : 'No'}
+              </p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   )
 }

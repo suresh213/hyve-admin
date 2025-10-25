@@ -144,16 +144,6 @@ const FreelancersPage: React.FC = () => {
     navigate(`/freelancers/${id}`)
   }
 
-  const handleDelete = async (id: string) => {
-    if (confirm('Are you sure you want to delete this freelancer?')) {
-      try {
-        await AdminFreelancersApiService.deleteFreelancer(id)
-        fetchFreelancers()
-      } catch (error) {
-        console.error('Error deleting freelancer:', error)
-      }
-    }
-  }
 
   const formatHourlyRate = (rate?: number) => {
     return rate ? `$${rate}/hr` : 'Not set'
@@ -383,14 +373,6 @@ const FreelancersPage: React.FC = () => {
                             >
                               <Edit className='mr-2 h-4 w-4' />
                               Edit
-                            </DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem
-                              onClick={() => handleDelete(freelancer.id)}
-                              className='text-red-600'
-                            >
-                              <Trash2 className='mr-2 h-4 w-4' />
-                              Delete
                             </DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
