@@ -101,7 +101,7 @@ const FreelancerDetailsPage: React.FC = () => {
     try {
       setLoading(true)
       const response = await AdminFreelancersApiService.getFreelancer(id!)
-      setFreelancer(response.data)
+      setFreelancer(response)
     } catch (error) {
       console.error('Error fetching freelancer:', error)
     } finally {

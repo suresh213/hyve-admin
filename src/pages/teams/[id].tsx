@@ -112,7 +112,7 @@ const TeamDetailsPage: React.FC = () => {
     try {
       setLoading(true)
       const response = await AdminTeamsApiService.getTeam(id!)
-      setTeam(response.data)
+      setTeam(response)
     } catch (error) {
       console.error('Error fetching team:', error)
     } finally {

@@ -186,7 +186,7 @@ const ProjectDetailsPage: React.FC = () => {
     try {
       setLoading(true)
       const response = await AdminProjectsApiService.getProject(id!)
-      setProject(response.data)
+      setProject(response)
     } catch (error) {
       console.error('Error fetching project:', error)
     } finally {
