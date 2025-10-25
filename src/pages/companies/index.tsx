@@ -203,6 +203,254 @@ const CompaniesPage: React.FC = () => {
           <Button onClick={() => fetchCompanies()}>Refresh</Button>
         </div>
       </div>
+
+      {/* Stats Cards */}
+      <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-4'>
+        <Card>
+          <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
+            <CardTitle className='text-sm font-medium'>
+              Total Companies
+            </CardTitle>
+            <Building2 className='h-4 w-4 text-muted-foreground' />
+          </CardHeader>
+          <CardContent>
+            <div className='text-2xl font-bold'>{pagination.totalCount}</div>
+            <p className='text-xs text-muted-foreground'>
+              Registered companies
+            </p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
+            <CardTitle className='text-sm font-medium'>Verified</CardTitle>
+            <CheckCircle className='h-4 w-4 text-muted-foreground' />
+          </CardHeader>
+          <CardContent>
+            <div className='text-2xl font-bold'>
+              {
+                (Array.isArray(companies) ? companies : []).filter(
+                  (c) => c.companyProfile.verificationStatus === 'VERIFIED'
+                ).length
+              }
+            </div>
+            <p className='text-xs text-muted-foreground'>Verified companies</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
+            <CardTitle className='text-sm font-medium'>Pending</CardTitle>
+            <XCircle className='h-4 w-4 text-muted-foreground' />
+          </CardHeader>
+          <CardContent>
+            <div className='text-2xl font-bold'>
+              {
+                (Array.isArray(companies) ? companies : []).filter(
+                  (c) => c.companyProfile.verificationStatus === 'PENDING'
+                ).length
+              }
+            </div>
+            <p className='text-xs text-muted-foreground'>
+              Pending verification
+            </p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
+            <CardTitle className='text-sm font-medium'>Registered</CardTitle>
+            <Building2 className='h-4 w-4 text-muted-foreground' />
+          </CardHeader>
+          <CardContent>
+            <div className='text-2xl font-bold'>
+              {
+                (Array.isArray(companies) ? companies : []).filter(
+                  (c) => c.companyProfile.isRegistered
+                ).length
+              }
+            </div>
+            <p className='text-xs text-muted-foreground'>Legally registered</p>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Filters */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Filters</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className='flex flex-wrap gap-4'>
+            <div className='min-w-[200px] flex-1'>
+              <Input
+                placeholder='Search by company name or email...'
+                value={searchTerm}
+                onChange={(e) => handleSearch(e.target.value)}
+                className='w-full'
+              />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Companies Table */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Companies ({pagination.totalCount})</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Company Name</TableHead>
+                <TableHead>Contact Person</TableHead>
+                <TableHead>Email</TableHead>
+                <TableHead>Industry</TableHead>
+                <TableHead>Size</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead>Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {loading ? (
+                <TableRow>
+                  <TableCell colSpan={7} className='py-8 text-center'>
+                    Loading companies...
+                  </TableCell>
+                </TableRow>
+              ) : (Array.isArray(companies) ? companies : []).length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={7} className='py-8 text-center'>
+                    No companies found
+                  </TableCell>
+                </TableRow>
+              ) : (
+                (Array.isArray(companies) ? companies : []).map((company) => (
+                  <TableRow key={company.id}>
+                    <TableCell className='font-medium'>
+                      <div className='flex items-center gap-2'>
+                        {company.companyProfile.logo && (
+                          <img
+                            src={company.companyProfile.logo}
+                            alt={company.companyProfile.name}
+                            className='h-8 w-8 rounded object-cover'
+                          />
+                        )}
+                        <span>{company.companyProfile.name}</span>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      {company.companyProfile.contactPersonName}
+                    </TableCell>
+                    <TableCell>{company.email}</TableCell>
+                    <TableCell>
+                      <Badge variant='outline'>
+                        {company.companyProfile.industryType || 'Not set'}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant='secondary'>
+                        {company.companyProfile.companySize || 'Not set'}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      <Badge
+                        variant={getVerificationBadgeVariant(
+                          company.companyProfile.verificationStatus
+                        )}
+                      >
+                        {company.companyProfile.verificationStatus}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant='ghost' className='h-8 w-8 p-0'>
+                            <MoreHorizontal className='h-4 w-4' />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align='end'>
+                          <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                          <DropdownMenuItem
+                            onClick={() => handleView(company.id)}
+                          >
+                            <Eye className='mr-2 h-4 w-4' />
+                            View Details
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() => handleEdit(company.id)}
+                          >
+                            <Edit className='mr-2 h-4 w-4' />
+                            Edit
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          {company.companyProfile.verificationStatus !==
+                            'VERIFIED' && (
+                            <DropdownMenuItem
+                              onClick={() =>
+                                handleVerificationUpdate(company.id, 'VERIFIED')
+                              }
+                            >
+                              <CheckCircle className='mr-2 h-4 w-4' />
+                              Verify
+                            </DropdownMenuItem>
+                          )}
+                          <DropdownMenuItem
+                            onClick={() =>
+                              handleVerificationUpdate(company.id, 'REJECTED')
+                            }
+                            className='text-red-600'
+                          >
+                            <XCircle className='mr-2 h-4 w-4' />
+                            Reject
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem
+                            onClick={() => handleDelete(company.id)}
+                            className='text-red-600'
+                          >
+                            <Trash2 className='mr-2 h-4 w-4' />
+                            Delete
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
+          </Table>
+
+          {/* Pagination */}
+          {pagination.totalPages > 1 && (
+            <div className='flex items-center justify-between px-2 py-4'>
+              <div className='flex-1 text-sm text-muted-foreground'>
+                Showing {(Array.isArray(companies) ? companies : []).length} of{' '}
+                {pagination.totalCount} companies
+              </div>
+              <div className='flex items-center space-x-2'>
+                <Button
+                  variant='outline'
+                  size='sm'
+                  onClick={() => handlePageChange(pagination.currentPage - 1)}
+                  disabled={pagination.currentPage <= 1}
+                >
+                  Previous
+                </Button>
+                <span className='text-sm'>
+                  Page {pagination.currentPage} of {pagination.totalPages}
+                </span>
+                <Button
+                  variant='outline'
+                  size='sm'
+                  onClick={() => handlePageChange(pagination.currentPage + 1)}
+                  disabled={pagination.currentPage >= pagination.totalPages}
+                >
+                  Next
+                </Button>
+              </div>
+            </div>
+          )}
+        </CardContent>
+      </Card>
     </div>
   )
 }
