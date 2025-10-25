@@ -34,11 +34,7 @@ const Logo = ({
 
   if (isCollapsed) {
     return (
-      <img
-        src='/logo.png'
-        alt='HYVE Platform'
-        className={`w-auto ${heightClass}`}
-      />
+      <img src='/logo.png' alt='HYVE' className={`w-auto ${heightClass}`} />
     )
   }
 
@@ -46,10 +42,10 @@ const Logo = ({
     <div className={`flex items-center gap-2 ${color}`}>
       <img
         src='/logo.png'
-        alt='HYVE Platform'
+        alt='HYVE'
         className={`w-auto ${heightClass} ${mdHeightClass}`}
       />
-      <span className={`sr-only`}>HYVE Platform</span>
+      <span className={`sr-only`}>HYVE</span>
     </div>
   )
 }

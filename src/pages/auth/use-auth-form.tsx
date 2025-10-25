@@ -277,7 +277,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
 
       toast({
         title: 'Account created successfully!',
-        description: 'Welcome to HYVE Platform.',
+        description: 'Welcome to HYVE.',
       })
 
       // Navigate to freelancers page (admin panel default)

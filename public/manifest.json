@@ -1,7 +1,7 @@
 {
-  "name": "HYVE Platform",
+  "name": "HYVE",
   "short_name": "HYVE",
-  "description": "HYVE Platform — Admin panel",
+  "description": "HYVE — Admin panel",
   "start_url": "/",
   "display": "standalone",
   "theme_color": "#0F1F40",

@@ -11,7 +11,7 @@ export default function Component() {
             <Logo size='2xl' mdSize='4xl' />
           </div>
           <h2 className='text-2xl font-medium text-gray-700 dark:text-gray-200'>
-            Welcome to HYVE Platform
+            Welcome to HYVE
           </h2>
         </div>
         <div className='rounded-lg bg-white p-8 shadow-md dark:bg-gray-800'>

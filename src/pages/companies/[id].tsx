@@ -79,7 +79,7 @@ const CompanyDetailsPage: React.FC = () => {
   const fetchCompany = async () => {
     try {
       setLoading(true)
-      const companyData = await AdminCompaniesApiService.getCompanyById(id!)
+      const companyData = await AdminCompaniesApiService.getCompany(id!)
       setCompany(companyData)
     } catch (error) {
       console.error('Error fetching company:', error)
@@ -170,7 +170,11 @@ const CompanyDetailsPage: React.FC = () => {
       {/* Header */}
       <div className='flex items-center justify-between'>
         <div className='flex items-center space-x-4'>
-          <Button variant='outline' size='sm' onClick={() => navigate('/companies')}>
+          <Button
+            variant='outline'
+            size='sm'
+            onClick={() => navigate('/companies')}
+          >
             <ArrowLeft className='mr-2 h-4 w-4' />
             Back to Companies
           </Button>
@@ -186,14 +190,15 @@ const CompanyDetailsPage: React.FC = () => {
               <h1 className='text-2xl font-bold tracking-tight'>
                 {company.companyProfile?.name || 'Company Details'}
               </h1>
-              <p className='text-muted-foreground'>
-                {company.email}
-              </p>
+              <p className='text-muted-foreground'>{company.email}</p>
             </div>
           </div>
         </div>
         <div className='flex items-center space-x-2'>
-          <Button variant='outline' onClick={() => navigate(`/companies/${id}/edit`)}>
+          <Button
+            variant='outline'
+            onClick={() => navigate(`/companies/${id}/edit`)}
+          >
             <Edit className='mr-2 h-4 w-4' />
             Edit
           </Button>
@@ -217,7 +222,9 @@ const CompanyDetailsPage: React.FC = () => {
                 {company.companyProfile?.verificationStatus || 'Unknown'}
               </Badge>
               <span className='text-sm text-muted-foreground'>
-                {company.companyProfile?.isRegistered ? 'Legally Registered' : 'Not Registered'}
+                {company.companyProfile?.isRegistered
+                  ? 'Legally Registered'
+                  : 'Not Registered'}
               </span>
             </div>
             {company.companyProfile?.verificationStatus !== 'VERIFIED' && (
@@ -344,7 +351,7 @@ const CompanyDetailsPage: React.FC = () => {
             )}
             <Separator />
             <div>
-              <label className='text-sm font-medium text-muted-foreground mb-2 block'>
+              <label className='mb-2 block text-sm font-medium text-muted-foreground'>
                 Social Links
               </label>
               <div className='space-y-1'>
@@ -353,7 +360,7 @@ const CompanyDetailsPage: React.FC = () => {
                     href={company.companyProfile.linkedinUrl}
                     target='_blank'
                     rel='noopener noreferrer'
-                    className='text-sm text-blue-600 hover:underline block'
+                    className='block text-sm text-blue-600 hover:underline'
                   >
                     LinkedIn
                   </a>
@@ -363,7 +370,7 @@ const CompanyDetailsPage: React.FC = () => {
                     href={company.companyProfile.twitterUrl}
                     target='_blank'
                     rel='noopener noreferrer'
-                    className='text-sm text-blue-600 hover:underline block'
+                    className='block text-sm text-blue-600 hover:underline'
                   >
                     Twitter
                   </a>
@@ -373,7 +380,7 @@ const CompanyDetailsPage: React.FC = () => {
                     href={company.companyProfile.facebookUrl}
                     target='_blank'
                     rel='noopener noreferrer'
-                    className='text-sm text-blue-600 hover:underline block'
+                    className='block text-sm text-blue-600 hover:underline'
                   >
                     Facebook
                   </a>
@@ -383,7 +390,7 @@ const CompanyDetailsPage: React.FC = () => {
                     href={company.companyProfile.instagramUrl}
                     target='_blank'
                     rel='noopener noreferrer'
-                    className='text-sm text-blue-600 hover:underline block'
+                    className='block text-sm text-blue-600 hover:underline'
                   >
                     Instagram
                   </a>
@@ -440,17 +447,13 @@ const CompanyDetailsPage: React.FC = () => {
               <label className='text-sm font-medium text-muted-foreground'>
                 Email Verified
               </label>
-              <p className='text-sm'>
-                {company.emailVerified ? 'Yes' : 'No'}
-              </p>
+              <p className='text-sm'>{company.emailVerified ? 'Yes' : 'No'}</p>
             </div>
             <div>
               <label className='text-sm font-medium text-muted-foreground'>
                 Mobile Verified
               </label>
-              <p className='text-sm'>
-                {company.mobileVerified ? 'Yes' : 'No'}
-              </p>
+              <p className='text-sm'>{company.mobileVerified ? 'Yes' : 'No'}</p>
             </div>
           </div>
         </CardContent>

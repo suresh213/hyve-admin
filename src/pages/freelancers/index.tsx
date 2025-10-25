@@ -144,7 +144,6 @@ const FreelancersPage: React.FC = () => {
     navigate(`/freelancers/${id}`)
   }
 
-
   const formatHourlyRate = (rate?: number) => {
     return rate ? `$${rate}/hr` : 'Not set'
   }

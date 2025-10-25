@@ -175,7 +175,6 @@ const ProjectsPage: React.FC = () => {
     navigate(`/projects/${id}`)
   }
 
-
   const handleStatusUpdate = async (id: string, status: string) => {
     try {
       await AdminProjectsApiService.updateProjectStatus(id, { status })

@@ -1,6 +1,6 @@
 // Logistics management types will be added here as needed
 
-// HYVE Platform API Types
+// HYVE API Types
 
 // Enums
 export enum UserStatus {
