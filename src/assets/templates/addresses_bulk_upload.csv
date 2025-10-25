@@ -1,0 +1,4 @@
+code,name,address,city,state,pinCode,zone,description,lat,lng,spoc1Name,spoc1Contact,spoc2Name,spoc2Contact
+LOC001,Central Office,123 Main Street,Mumbai,Maharashtra,400001,West Zone,Main corporate office,19.0760,72.8777,John Manager,9876543210,Jane Supervisor,9876543211
+LOC002,North Branch,456 North Road,Delhi,Delhi,110001,North Zone,Northern branch office,28.7041,77.1025,Mike Admin,9876543212,Sarah Lead,9876543213
+LOC003,Tech Park,789 IT Boulevard,Bangalore,Karnataka,560001,South Zone,Technology development center,12.9716,77.5946,Alex Head,9876543214,Lisa Coord,9876543215 

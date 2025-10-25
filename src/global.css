@@ -1,0 +1,375 @@
+@import '@fontsource/poppins/latin.css';
+@import '@fontsource/inter/latin.css';
+@import '@fontsource/roboto/latin.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Custom CSS Variables */
+    --header-height: 8vh;
+    --body-height: 100vh;
+
+    /* CSS Variables for light theme */
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+
+    /* Primary color: #0F1F40 (navy) */
+    --brand-primary: 220 62% 15%; /* #0F1F40 */
+    --primary: var(--brand-primary);
+    --primary-foreground: 210 40% 98%;
+
+    /* Secondary color: #F7941D (orange) */
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --brand-secondary: 33 93% 54%; /* #F7941D */
+
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    /* Focus ring follows primary */
+    --ring: var(--brand-primary);
+
+    --radius: 0.5rem;
+
+    --font-roboto: 'Roboto', sans-serif;
+    --font-inter: 'Inter', sans-serif;
+    --font-primary: 'Poppins', Calibri, 'Segoe UI', Roboto, Arial, sans-serif;
+    --font-secondary: Calibri, 'Poppins', 'Segoe UI', Roboto, Arial, sans-serif;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+
+    /* Primary color: #0F1F40 (navy) */
+    --brand-primary: 220 62% 15%; /* #0F1F40 */
+    --primary: var(--brand-primary);
+    --primary-foreground: 210 40% 98%;
+
+    /* Secondary color: #F7941D (orange) */
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --brand-secondary: 33 93% 54%; /* #F7941D */
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    /* Focus ring follows primary */
+    --ring: var(--brand-primary);
+  }
+
+  /* styles.css */
+  .collapsibleDropdown {
+    overflow: hidden;
+  }
+  .collapsibleDropdown[data-state='open'] {
+    animation: slideDown 200ms ease-out;
+  }
+  .collapsibleDropdown[data-state='closed'] {
+    animation: slideUp 200ms ease-out;
+  }
+
+  @keyframes slideDown {
+    from {
+      height: 0;
+    }
+    to {
+      height: var(--radix-collapsible-content-height);
+    }
+  }
+
+  @keyframes slideUp {
+    from {
+      height: var(--radix-collapsible-content-height);
+    }
+    to {
+      height: 0;
+    }
+  }
+
+  * {
+    @apply border-border;
+  }
+  html,
+  body {
+    @apply h-full w-full bg-background text-foreground;
+    font-family: var(--font-primary) !important;
+    font-weight: 400 !important; /* NORMAL - lighter globally */
+    line-height: 1.5;
+    overflow: hidden; /* Prevent body scrolling */
+  }
+
+  /* Improve readability for all text */
+  * {
+    font-feature-settings:
+      'kern' 1,
+      'liga' 1;
+  }
+
+  /* Improve button text readability */
+  button {
+    font-weight: 400 !important; /* NORMAL - lighter globally */
+  }
+
+  /* Improve badge readability */
+  .badge-text {
+    font-weight: 500 !important; /* MEDIUM - lighter globally */
+    letter-spacing: 0.025em;
+  }
+
+  /* Improve tab text readability */
+  [role='tab'] {
+    font-weight: 400 !important; /* NORMAL - lighter globally */
+    letter-spacing: 0.025em;
+  }
+
+  /* Improve count badge readability */
+  .count-badge {
+    font-weight: 500 !important; /* MEDIUM - lighter globally */
+    font-size: 0.875rem;
+    letter-spacing: 0.025em;
+  }
+
+  /* Improve heading readability */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-weight: 500 !important; /* MEDIUM - lighter globally */
+  }
+
+  /* Improve strong text readability */
+  strong,
+  b {
+    font-weight: 500 !important; /* MEDIUM - lighter globally */
+  }
+
+  /* Improve label text readability */
+  label {
+    font-weight: 400 !important; /* NORMAL - lighter globally */
+  }
+
+  /* Improve input text readability */
+  input {
+    font-weight: 400 !important; /* NORMAL - lighter globally */
+  }
+
+  /* Improve textarea text readability */
+  textarea {
+    font-weight: 400 !important; /* NORMAL - lighter globally */
+  }
+
+  /* Prevent focus zoom on mobile devices */
+  @media screen and (max-width: 767px) {
+    input,
+    select,
+    textarea {
+      font-size: 16px !important;
+    }
+  }
+  body > #root {
+    @apply h-full;
+  }
+}
+
+@layer utilities {
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .faded-bottom {
+    @apply after:pointer-events-none after:absolute after:bottom-0 after:left-0 after:hidden after:h-32 after:w-full after:bg-[linear-gradient(180deg,_transparent_10%,_hsl(var(--background))_70%)] after:md:block;
+  }
+  /* Hide scrollbar for IE, Edge and Firefox */
+  .no-scrollbar {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+
+  /* .faded-bottom {
+    @apply after:pointer-events-none after:absolute after:bottom-0 after:left-0 after:hidden after:h-32 after:w-full after:bg-[linear-gradient(180deg,_transparent_10%,_hsl(var(--background))_70%)] after:md:block;
+  } */
+}
+
+/* Scrollbar Track */
+::-webkit-scrollbar-track {
+  /* -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3); */
+  background-color: #f5f5f5;
+  border-radius: 5px;
+}
+
+.dark ::-webkit-scrollbar-track {
+  background-color: #333;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 3px;
+  height: 3px;
+  background-color: #f5f5f5;
+}
+
+.dark ::-webkit-scrollbar {
+  background-color: #333;
+}
+
+/* Scrollbar Thumb */
+::-webkit-scrollbar-thumb {
+  border-radius: 3px;
+  background-color: #ccc;
+  /* background-image: -webkit-gradient(
+    linear,
+    left bottom,
+    left top,
+    color-stop(0.44, rgb(94, 94, 94)),
+    color-stop(0.72, rgb(109, 109, 109)),
+    color-stop(0.86, rgb(172, 169, 169))
+  ); */
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background-color: #666;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.hide-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+/* Magic UI Animations */
+@keyframes shimmer-slide {
+  to {
+    transform: translate(calc(100cqw - 100%), 0);
+  }
+}
+
+@keyframes spin-around {
+  0% {
+    transform: translateZ(0) rotate(0);
+  }
+  15%,
+  35% {
+    transform: translateZ(0) rotate(90deg);
+  }
+  65%,
+  85% {
+    transform: translateZ(0) rotate(270deg);
+  }
+  100% {
+    transform: translateZ(0) rotate(360deg);
+  }
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(calc(-100% - var(--gap)));
+  }
+}
+
+@keyframes marquee-vertical {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(calc(-100% - var(--gap)));
+  }
+}
+
+@keyframes orbit {
+  0% {
+    transform: rotate(0deg) translateY(calc(var(--radius) * 1px)) rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg) translateY(calc(var(--radius) * 1px))
+      rotate(-360deg);
+  }
+}
+
+@keyframes accordion-down {
+  from {
+    height: 0;
+  }
+  to {
+    height: var(--radix-accordion-content-height);
+  }
+}
+
+@keyframes accordion-up {
+  from {
+    height: var(--radix-accordion-content-height);
+  }
+  to {
+    height: 0;
+  }
+}
+
+.animate-shimmer-slide {
+  animation: shimmer-slide var(--speed) ease-in-out infinite alternate;
+}
+
+.animate-spin-around {
+  animation: spin-around calc(var(--speed) * 2) infinite linear;
+}
+
+.animate-marquee {
+  animation: marquee var(--duration) linear infinite;
+}
+
+.animate-marquee-vertical {
+  animation: marquee-vertical var(--duration) linear infinite;
+}
+
+.animate-orbit {
+  animation: orbit calc(var(--duration) * 1s) linear infinite;
+}
+
+.animate-accordion-down {
+  animation: accordion-down 0.2s ease-out;
+}
+
+.animate-accordion-up {
+  animation: accordion-up 0.2s ease-out;
+}

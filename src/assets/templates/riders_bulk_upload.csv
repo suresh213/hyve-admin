@@ -1,0 +1,4 @@
+firstName,lastName,contact,username,password,email,vehicleNumber,drivingLicenseNumber,zone,photoUrl
+John,Doe,9876543210,johndoe,password123,john@example.com,MH12AB1234,DL1234567890,North Zone,
+Jane,Smith,9876543211,janesmith,password456,jane@example.com,MH12CD5678,DL2345678901,South Zone,
+Mike,Johnson,9876543212,mikejohnson,password789,mike@example.com,MH12EF9012,DL3456789012,East Zone, 
