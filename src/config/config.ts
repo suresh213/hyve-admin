@@ -4,13 +4,11 @@ import Joi from 'joi'
 const envSchema = Joi.object({
   VITE_APP_URL: Joi.string().uri().required(),
   VITE_API_ROOT: Joi.string().uri().required(),
-  VITE_GOOGLE_MAPS_API_KEY: Joi.string().required(),
 }).unknown()
 
 const envVars = {
   VITE_APP_URL: import.meta.env.VITE_APP_URL,
   VITE_API_ROOT: import.meta.env.VITE_API_ROOT,
-  VITE_GOOGLE_MAPS_API_KEY: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
 }
 
 // Validate the environment variables against the schema
@@ -27,5 +25,4 @@ export const config = {
   app: {
     url: validatedEnv.VITE_APP_URL,
   },
-  googleMapsApiKey: validatedEnv.VITE_GOOGLE_MAPS_API_KEY,
 }
