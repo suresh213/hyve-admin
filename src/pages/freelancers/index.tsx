@@ -9,6 +9,8 @@ import {
   DollarSign,
 } from 'lucide-react'
 
+import { useDebouncedSearch } from '@/hooks/useDebouncedSearch'
+
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -79,7 +81,6 @@ const FreelancersPage: React.FC = () => {
   const navigate = useNavigate()
   const [freelancers, setFreelancers] = useState<Freelancer[]>([])
   const [loading, setLoading] = useState(true)
-  const [searchTerm, setSearchTerm] = useState('')
   const [filters, setFilters] = useState<AdminFreelancerSearchParams>({
     page: 1,
     limit: 10,
@@ -90,6 +91,11 @@ const FreelancersPage: React.FC = () => {
     currentPage: 1,
     totalCount: 0,
     totalPages: 0,
+  })
+
+  // Debounced search
+  const { searchText, handleSearchChange } = useDebouncedSearch('', (value) => {
+    setFilters((prev) => ({ ...prev, name: value || undefined, page: 1 }))
   })
 
   // Fetch freelancers
@@ -114,12 +120,6 @@ const FreelancersPage: React.FC = () => {
   useEffect(() => {
     fetchFreelancers()
   }, [fetchFreelancers])
-
-  // Handle search
-  const handleSearch = (value: string) => {
-    setSearchTerm(value)
-    setFilters((prev) => ({ ...prev, name: value || undefined, page: 1 }))
-  }
 
   // Handle filter changes
   const handleFilterChange = (
@@ -242,8 +242,8 @@ const FreelancersPage: React.FC = () => {
             <div className='min-w-[200px] flex-1'>
               <Input
                 placeholder='Search by name or email...'
-                value={searchTerm}
-                onChange={(e) => handleSearch(e.target.value)}
+                value={searchText}
+                onChange={(e) => handleSearchChange(e.target.value)}
                 className='w-full'
               />
             </div>

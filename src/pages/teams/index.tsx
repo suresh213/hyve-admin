@@ -44,6 +44,8 @@ import AdminTeamsApiService, {
   AdminTeamSearchParams,
 } from '@/service/adminTeamsApi'
 
+import { useDebouncedSearch } from '@/hooks/useDebouncedSearch'
+
 interface Team {
   id: string
   name: string
@@ -70,7 +72,6 @@ const TeamsPage: React.FC = () => {
   const navigate = useNavigate()
   const [teams, setTeams] = useState<Team[]>([])
   const [loading, setLoading] = useState(true)
-  const [searchTerm, setSearchTerm] = useState('')
   const [filters, setFilters] = useState<AdminTeamSearchParams>({
     page: 1,
     limit: 10,
@@ -81,6 +82,11 @@ const TeamsPage: React.FC = () => {
     currentPage: 1,
     totalCount: 0,
     totalPages: 0,
+  })
+
+  // Debounced search
+  const { searchText, handleSearchChange } = useDebouncedSearch('', (value) => {
+    setFilters((prev) => ({ ...prev, name: value || undefined, page: 1 }))
   })
 
   // Fetch teams
@@ -105,12 +111,6 @@ const TeamsPage: React.FC = () => {
   useEffect(() => {
     fetchTeams()
   }, [fetchTeams])
-
-  // Handle search
-  const handleSearch = (value: string) => {
-    setSearchTerm(value)
-    setFilters((prev) => ({ ...prev, name: value || undefined, page: 1 }))
-  }
 
   // Handle filter changes
   const handleFilterChange = (key: keyof AdminTeamSearchParams, value: any) => {
@@ -248,9 +248,9 @@ const TeamsPage: React.FC = () => {
           <div className='flex flex-wrap gap-4'>
             <div className='min-w-[200px] flex-1'>
               <Input
-                placeholder='Search by name or owner...'
-                value={searchTerm}
-                onChange={(e) => handleSearch(e.target.value)}
+                placeholder='Search by name...'
+                value={searchText}
+                onChange={(e) => handleSearchChange(e.target.value)}
                 className='w-full'
               />
             </div>
@@ -362,8 +362,8 @@ const TeamsPage: React.FC = () => {
             <TableBody>
               {loading ? (
                 <TableRow>
-                <TableCell colSpan={6} className='py-8 text-center'>
-                  Loading teams...
+                  <TableCell colSpan={6} className='py-8 text-center'>
+                    Loading teams...
                   </TableCell>
                 </TableRow>
               ) : teams.length === 0 ? (

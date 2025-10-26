@@ -46,6 +46,8 @@ import {
 import AdminProjectsApiService, {
   AdminProjectSearchParams,
 } from '@/service/adminProjectsApi'
+
+import { useDebouncedSearch } from '@/hooks/useDebouncedSearch'
 import { useNavigate } from 'react-router-dom'
 
 interface Project {
@@ -110,7 +112,6 @@ const ProjectsPage: React.FC = () => {
   const navigate = useNavigate()
   const [projects, setProjects] = useState<Project[]>([])
   const [loading, setLoading] = useState(true)
-  const [searchTerm, setSearchTerm] = useState('')
   const [filters, setFilters] = useState<AdminProjectSearchParams>({
     page: 1,
     limit: 10,
@@ -121,6 +122,11 @@ const ProjectsPage: React.FC = () => {
     currentPage: 1,
     totalCount: 0,
     totalPages: 0,
+  })
+
+  // Debounced search
+  const { searchText, handleSearchChange } = useDebouncedSearch('', (value) => {
+    setFilters((prev) => ({ ...prev, title: value || undefined, page: 1 }))
   })
 
   // Fetch projects
@@ -145,12 +151,6 @@ const ProjectsPage: React.FC = () => {
   useEffect(() => {
     fetchProjects()
   }, [filters])
-
-  // Handle search
-  const handleSearch = (value: string) => {
-    setSearchTerm(value)
-    setFilters((prev) => ({ ...prev, title: value || undefined, page: 1 }))
-  }
 
   // Handle filter changes
   const handleFilterChange = (
@@ -300,8 +300,8 @@ const ProjectsPage: React.FC = () => {
             <div className='min-w-[200px] flex-1'>
               <Input
                 placeholder='Search by project title...'
-                value={searchTerm}
-                onChange={(e) => handleSearch(e.target.value)}
+                value={searchText}
+                onChange={(e) => handleSearchChange(e.target.value)}
                 className='w-full'
               />
             </div>

@@ -580,3 +580,4 @@ const CompanyEditPage: React.FC = () => {
 }
 
 export default CompanyEditPage
+

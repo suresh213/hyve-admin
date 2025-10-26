@@ -579,3 +579,4 @@ const FreelancerEditPage: React.FC = () => {
 }
 
 export default FreelancerEditPage
+

@@ -43,6 +43,8 @@ import {
 import AdminCompaniesApiService, {
   AdminCompanySearchParams,
 } from '@/service/adminCompaniesApi'
+
+import { useDebouncedSearch } from '@/hooks/useDebouncedSearch'
 import { useNavigate } from 'react-router-dom'
 
 interface Company {
@@ -91,7 +93,6 @@ const CompaniesPage: React.FC = () => {
   const navigate = useNavigate()
   const [companies, setCompanies] = useState<Company[]>([])
   const [loading, setLoading] = useState(true)
-  const [searchTerm, setSearchTerm] = useState('')
   const [filters, setFilters] = useState<AdminCompanySearchParams>({
     page: 1,
     limit: 10,
@@ -102,6 +103,11 @@ const CompaniesPage: React.FC = () => {
     currentPage: 1,
     totalCount: 0,
     totalPages: 0,
+  })
+
+  // Debounced search
+  const { searchText, handleSearchChange } = useDebouncedSearch('', (value) => {
+    setFilters((prev) => ({ ...prev, name: value || undefined, page: 1 }))
   })
 
   // Fetch companies
@@ -126,12 +132,6 @@ const CompaniesPage: React.FC = () => {
   useEffect(() => {
     fetchCompanies()
   }, [filters])
-
-  // Handle search
-  const handleSearch = (value: string) => {
-    setSearchTerm(value)
-    setFilters((prev) => ({ ...prev, name: value || undefined, page: 1 }))
-  }
 
   // Handle filter changes
   const handleFilterChange = (
@@ -270,8 +270,8 @@ const CompaniesPage: React.FC = () => {
             <div className='min-w-[200px] flex-1'>
               <Input
                 placeholder='Search by company name or email...'
-                value={searchTerm}
-                onChange={(e) => handleSearch(e.target.value)}
+                value={searchText}
+                onChange={(e) => handleSearchChange(e.target.value)}
                 className='w-full'
               />
             </div>
