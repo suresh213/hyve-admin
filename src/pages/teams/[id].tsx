@@ -19,6 +19,14 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
 
 import AdminTeamsApiService from '@/service/adminTeamsApi'
 
@@ -101,6 +109,7 @@ const TeamDetailsPage: React.FC = () => {
   const navigate = useNavigate()
   const [team, setTeam] = useState<TeamProfile | null>(null)
   const [loading, setLoading] = useState(true)
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
 
   useEffect(() => {
     if (id) {
@@ -120,14 +129,17 @@ const TeamDetailsPage: React.FC = () => {
     }
   }
 
-  const handleDelete = async () => {
-    if (confirm('Are you sure you want to delete this team?')) {
-      try {
-        await AdminTeamsApiService.deleteTeam(id!)
-        navigate('/teams')
-      } catch (error) {
-        console.error('Error deleting team:', error)
-      }
+  const handleDelete = () => {
+    setDeleteDialogOpen(true)
+  }
+
+  const confirmDelete = async () => {
+    try {
+      await AdminTeamsApiService.deleteTeam(id!)
+      setDeleteDialogOpen(false)
+      navigate('/teams')
+    } catch (error) {
+      console.error('Error deleting team:', error)
     }
   }
 
@@ -574,6 +586,33 @@ const TeamDetailsPage: React.FC = () => {
           </CardContent>
         </Card>
       )}
+
+      {/* Delete Dialog */}
+      <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Confirm Delete</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to delete{' '}
+              <span className='font-semibold'>
+                {team?.name || 'this team'}
+              </span>
+              ? This action cannot be undone and will remove all team members.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              variant='outline'
+              onClick={() => setDeleteDialogOpen(false)}
+            >
+              Cancel
+            </Button>
+            <Button variant='destructive' onClick={confirmDelete}>
+              Delete
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

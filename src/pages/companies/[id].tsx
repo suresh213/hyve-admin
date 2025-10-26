@@ -17,6 +17,14 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
 import { Skeleton } from '@/components/ui/skeleton'
 
 import AdminCompaniesApiService, {
@@ -69,6 +77,7 @@ const CompanyDetailsPage: React.FC = () => {
   const navigate = useNavigate()
   const [company, setCompany] = useState<CompanyProfile | null>(null)
   const [loading, setLoading] = useState(true)
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
 
   useEffect(() => {
     if (id) {
@@ -88,14 +97,17 @@ const CompanyDetailsPage: React.FC = () => {
     }
   }
 
-  const handleDelete = async () => {
-    if (confirm('Are you sure you want to delete this company?')) {
-      try {
-        await AdminCompaniesApiService.deleteCompany(id!)
-        navigate('/companies')
-      } catch (error) {
-        console.error('Error deleting company:', error)
-      }
+  const handleDelete = () => {
+    setDeleteDialogOpen(true)
+  }
+
+  const confirmDelete = async () => {
+    try {
+      await AdminCompaniesApiService.deleteCompany(id!)
+      setDeleteDialogOpen(false)
+      navigate('/companies')
+    } catch (error) {
+      console.error('Error deleting company:', error)
     }
   }
 
@@ -458,6 +470,33 @@ const CompanyDetailsPage: React.FC = () => {
           </div>
         </CardContent>
       </Card>
+
+      {/* Delete Dialog */}
+      <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Confirm Delete</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to delete{' '}
+              <span className='font-semibold'>
+                {company?.companyProfile?.name || company?.fullName || 'this company'}
+              </span>
+              ? This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              variant='outline'
+              onClick={() => setDeleteDialogOpen(false)}
+            >
+              Cancel
+            </Button>
+            <Button variant='destructive' onClick={confirmDelete}>
+              Delete
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

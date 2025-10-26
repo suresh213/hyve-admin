@@ -17,6 +17,14 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
 
 import AdminFreelancersApiService from '@/service/adminFreelancersApi'
 
@@ -90,6 +98,7 @@ const FreelancerDetailsPage: React.FC = () => {
   const navigate = useNavigate()
   const [freelancer, setFreelancer] = useState<FreelancerProfile | null>(null)
   const [loading, setLoading] = useState(true)
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
 
   useEffect(() => {
     if (id) {
@@ -109,14 +118,17 @@ const FreelancerDetailsPage: React.FC = () => {
     }
   }
 
-  const handleDelete = async () => {
-    if (confirm('Are you sure you want to delete this freelancer?')) {
-      try {
-        await AdminFreelancersApiService.deleteFreelancer(id!)
-        navigate('/freelancers')
-      } catch (error) {
-        console.error('Error deleting freelancer:', error)
-      }
+  const handleDelete = () => {
+    setDeleteDialogOpen(true)
+  }
+
+  const confirmDelete = async () => {
+    try {
+      await AdminFreelancersApiService.deleteFreelancer(id!)
+      setDeleteDialogOpen(false)
+      navigate('/freelancers')
+    } catch (error) {
+      console.error('Error deleting freelancer:', error)
     }
   }
 
@@ -653,6 +665,33 @@ const FreelancerDetailsPage: React.FC = () => {
           </CardContent>
         </Card>
       )}
+
+      {/* Delete Dialog */}
+      <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Confirm Delete</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to delete{' '}
+              <span className='font-semibold'>
+                {freelancer?.fullName || 'this freelancer'}
+              </span>
+              ? This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              variant='outline'
+              onClick={() => setDeleteDialogOpen(false)}
+            >
+              Cancel
+            </Button>
+            <Button variant='destructive' onClick={confirmDelete}>
+              Delete
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

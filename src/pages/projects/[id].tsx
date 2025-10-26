@@ -19,6 +19,14 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
 
 import AdminProjectsApiService from '@/service/adminProjectsApi'
 
@@ -175,6 +183,7 @@ const ProjectDetailsPage: React.FC = () => {
   const navigate = useNavigate()
   const [project, setProject] = useState<ProjectProfile | null>(null)
   const [loading, setLoading] = useState(true)
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
 
   useEffect(() => {
     if (id) {
@@ -194,14 +203,17 @@ const ProjectDetailsPage: React.FC = () => {
     }
   }
 
-  const handleDelete = async () => {
-    if (confirm('Are you sure you want to delete this project?')) {
-      try {
-        await AdminProjectsApiService.deleteProject(id!)
-        navigate('/projects')
-      } catch (error) {
-        console.error('Error deleting project:', error)
-      }
+  const handleDelete = () => {
+    setDeleteDialogOpen(true)
+  }
+
+  const confirmDelete = async () => {
+    try {
+      await AdminProjectsApiService.deleteProject(id!)
+      setDeleteDialogOpen(false)
+      navigate('/projects')
+    } catch (error) {
+      console.error('Error deleting project:', error)
     }
   }
 
@@ -724,6 +736,33 @@ const ProjectDetailsPage: React.FC = () => {
           </CardContent>
         </Card>
       )}
+
+      {/* Delete Dialog */}
+      <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Confirm Delete</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to delete{' '}
+              <span className='font-semibold'>
+                {project?.title || 'this project'}
+              </span>
+              ? This action cannot be undone and will remove all project data.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              variant='outline'
+              onClick={() => setDeleteDialogOpen(false)}
+            >
+              Cancel
+            </Button>
+            <Button variant='destructive' onClick={confirmDelete}>
+              Delete
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
