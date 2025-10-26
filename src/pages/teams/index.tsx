@@ -47,21 +47,14 @@ import AdminTeamsApiService, {
 interface Team {
   id: string
   name: string
-  description: string
   logo?: string
   isVerified?: boolean
   isActive?: boolean
   isPublic?: boolean
   createdAt: string
   updatedAt: string
-  owner: {
-    id: string
-    fullName: string
-    email: string
-  }
   _count: {
     members: number
-    showcases: number
   }
   skills: string[]
 }
@@ -359,10 +352,8 @@ const TeamsPage: React.FC = () => {
             <TableHeader>
               <TableRow>
                 <TableHead>Team Name</TableHead>
-                <TableHead>Owner</TableHead>
                 <TableHead>Members</TableHead>
                 <TableHead>Skills</TableHead>
-                <TableHead>Showcases</TableHead>
                 <TableHead>Verification</TableHead>
                 <TableHead>Visibility</TableHead>
                 <TableHead>Actions</TableHead>
@@ -371,13 +362,13 @@ const TeamsPage: React.FC = () => {
             <TableBody>
               {loading ? (
                 <TableRow>
-                  <TableCell colSpan={8} className='py-8 text-center'>
-                    Loading teams...
+                <TableCell colSpan={6} className='py-8 text-center'>
+                  Loading teams...
                   </TableCell>
                 </TableRow>
               ) : teams.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={8} className='py-8 text-center'>
+                  <TableCell colSpan={6} className='py-8 text-center'>
                     No teams found
                   </TableCell>
                 </TableRow>
@@ -393,25 +384,7 @@ const TeamsPage: React.FC = () => {
                             className='h-8 w-8 rounded-full object-cover'
                           />
                         )}
-                        <div>
-                          <div className='font-medium'>{team.name}</div>
-                          <div className='line-clamp-1 text-sm text-muted-foreground'>
-                            {team.description}
-                          </div>
-                        </div>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <div className='flex items-center gap-2'>
-                        <User className='h-4 w-4 text-muted-foreground' />
-                        <div>
-                          <div className='text-sm font-medium'>
-                            {team.owner.fullName}
-                          </div>
-                          <div className='text-xs text-muted-foreground'>
-                            {team.owner.email}
-                          </div>
-                        </div>
+                        <div className='font-medium'>{team.name}</div>
                       </div>
                     </TableCell>
                     <TableCell>
@@ -436,11 +409,6 @@ const TeamsPage: React.FC = () => {
                           </Badge>
                         )}
                       </div>
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant='outline'>
-                        {team._count.showcases} showcases
-                      </Badge>
                     </TableCell>
                     <TableCell>
                       <Badge
