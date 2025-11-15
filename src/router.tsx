@@ -6,6 +6,7 @@ import {
   TrendingUp,
   Users,
   LayoutDashboard,
+  Wallet,
 } from 'lucide-react'
 import { lazy, Suspense } from 'react'
 import { createBrowserRouter } from 'react-router-dom'
@@ -26,12 +27,14 @@ const FreelancersPage = lazy(() => import('./pages/freelancers/index.tsx'))
 const CompaniesPage = lazy(() => import('./pages/companies/index.tsx'))
 const TeamsPage = lazy(() => import('./pages/teams/index.tsx'))
 const ProjectsPage = lazy(() => import('./pages/projects/index.tsx'))
+const WithdrawalsPage = lazy(() => import('./pages/withdrawals/index.tsx'))
 
 // HYVE Detail Pages
 const FreelancerDetailsPage = lazy(() => import('./pages/freelancers/[id]'))
 const CompanyDetailsPage = lazy(() => import('./pages/companies/[id]'))
 const TeamDetailsPage = lazy(() => import('./pages/teams/[id]'))
 const ProjectDetailsPage = lazy(() => import('./pages/projects/[id]'))
+const WithdrawalDetailsPage = lazy(() => import('./pages/withdrawals/[id]'))
 
 // HYVE Edit Pages
 const FreelancerEditPage = lazy(() => import('./pages/freelancers/[id]/edit'))
@@ -196,6 +199,22 @@ const paths = {
     isOnboarding: false,
     isAdmin: true,
   },
+  withdrawals: {
+    path: '/withdrawals',
+    component: <WithdrawalsPage />,
+    isPrivate: false,
+    isAuth: false,
+    isOnboarding: false,
+    isAdmin: true,
+  },
+  withdrawalDetails: {
+    path: '/withdrawals/:id',
+    component: <WithdrawalDetailsPage />,
+    isPrivate: false,
+    isAuth: false,
+    isOnboarding: false,
+    isAdmin: true,
+  },
   404: {
     path: '/404',
     component: <NotFoundError />,
@@ -282,6 +301,13 @@ export const sideBarSections: SideLink[] = [
     label: 'Projects',
     href: paths.projects.path,
     icon: <FolderOpen className='h-5 w-5' />,
+    isComingSoon: false,
+  },
+  {
+    title: 'Withdrawals',
+    label: 'Withdrawals',
+    href: paths.withdrawals.path,
+    icon: <Wallet className='h-5 w-5' />,
     isComingSoon: false,
   },
 ]

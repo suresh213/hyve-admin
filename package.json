@@ -12,6 +12,7 @@
     "format": "prettier --write ."
   },
   "dependencies": {
+    "@cashfreepayments/cashfree-js": "^1.0.5",
     "@fontsource/archivo-black": "^5.1.0",
     "@fontsource/dm-sans": "^5.1.0",
     "@fontsource/dm-serif-display": "^5.1.0",
