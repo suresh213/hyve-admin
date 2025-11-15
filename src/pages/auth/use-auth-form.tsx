@@ -333,8 +333,8 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
       const response = await authApi.login(loginData)
 
       // LogiTrack API returns generic object, so we need to handle the actual structure
-      const user = response.data.user
-      const accessToken = response.data.accessToken
+      const user = response.user
+      const accessToken = response.tokens.access.token
 
       // Store tokens and user data
       localStorage.setItem('user', JSON.stringify(user))
